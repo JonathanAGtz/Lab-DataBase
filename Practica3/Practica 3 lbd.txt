@@ -1,0 +1,161 @@
+create database practica3
+go
+
+use practica3
+Create table clientes (
+iNumCliente int not null  primary key,
+vNombre varchar(255) not null, 
+vPrimerApellido varchar(255) not null,
+vSegundoApellido varchar(255) not null,
+vTipoDeClientes varchar(58) not null, 
+NombreCompleto as (vNombre + '' + vPrimerApellido + '' + vSegundoApellido),
+)
+create index INDX_Cliente_NombreCompleto on clientes(NombreCompleto)
+create Index INDX_Clientes_TipoDeClientes on Clientes(vTipoDeClientes)
+
+create table trabajador(
+iNumTrabajador int not null  primary key,
+vNombre varchar(255) not null, 
+vPrimerApellido varchar(255) not null,
+vSegundoApellido varchar(255) not null,
+vTipoTrabajador varchar(58) not null, 
+NombreCompleto as (vNombre + '' + vPrimerApellido + '' + vSegundoApellido)
+)
+create index INDX_Trabajador_NombreCompleto on clientes(NombreCompleto)
+create Index INDX_Trabajador_TipoTrabajador on trabajador(vTipoTrabajador)
+
+create table productos(
+iNumProdu int not null  primary key,
+vNombre varchar(255) not null, 
+vTipProdu varchar(155) not null, 
+Producto as ( iNumProdu+ '' + vNombre + '' + vTipProdu)
+)
+create index INDX_Productos_Producto on Productos(Producto)
+create index INDX_Productos_TipoProducto on Productos(vTipProdu)
+
+create table ticket (
+iNumTick int not null primary key,
+iNumComp int not null,
+iFactura int not null,
+iNumCliente int not null,
+icantidad int not null,
+iNumTrabajador int not null,
+)
+create index INDX_ticket_ticket on Ticket(iNumTick)
+create index INDX_ticket_Trabajador on Ticket(iNumTrabajador)
+
+create table compra(
+iNumComp int not null primary key,
+iNumCliente int not null,
+iNumProdu int not null,
+icantidad int not null
+)
+create index INDX_compra_Compra on Compra(iNumComp)
+create index INDX_compra_NombreCliente on Compra(iNumCliente)
+
+create table provedores (
+iNumProv int not null primary key,
+iNumProdu int not null,
+icantidad int not null,
+vTipProdu varchar(155)
+) /*--falto una e a proveedores--*/ 
+create index INDX_Provedores_proveedor on Provedores(iNumProv)
+
+create table venta(
+iFactura int not null primary key,
+iNumTrabajador int,
+iNumCliente int not null,
+icantidad int not null,
+INumTick int not null
+) 
+create index INDX_Venta_Factura on Venta(iFactura)
+create index INDX_Venta_Ticket on Venta(INumTick)
+
+create table operacion(
+icantidad int not null primary key,
+iDevolucion int not null, 
+iDescuentos int not null, 
+iOtros int not null
+)
+
+create table Tipoproducto(
+vTipProdu varchar(155) not null primary key,
+iAlmacen int not null
+)
+
+alter table clientes 
+add constraint Cliente_Venta foreign key (iNumCliente)
+References clientes(iNumCliente)
+alter table clientes 
+add constraint Cliente_Ticket foreign key (iNumCliente)
+References clientes(iNumCliente)
+alter table clientes 
+add constraint Cliente_Compra foreign key (iNumCliente)
+References clientes(iNumCliente)
+alter table trabajador 
+add constraint Trabajador_Ticket foreign key (iNumTrabajador)
+References trabajador(iNumTrabajador)
+alter table trabajador 
+add constraint Trabajador_Venta foreign key (iNumTrabajador)
+References trabajador(iNumTrabajador)
+alter table productos
+add constraint Productos_Provedor foreign key (iNumProdu)
+References productos(iNumProdu)
+alter table productos
+add constraint Productos_Compra foreign key (iNumProdu)
+References productos(iNumProdu)
+alter table ticket
+add constraint Ticket_Venta foreign key (iNumTick)
+References ticket(iNumTick)
+alter table compra
+add constraint Compra_Ticket foreign key (iNumComp)
+References compra(iNumComp)
+alter table venta
+add constraint venta_Ticket foreign key (iFactura)
+References venta(iFactura)
+alter table operacion
+add constraint Operacion_Ticket foreign key (icantidad)
+References operacion(icantidad)
+alter table operacion
+add constraint Operacion_compra foreign key (icantidad)
+References operacion(icantidad)
+alter table operacion
+add constraint Operacion_provedor foreign key (icantidad)
+References operacion(icantidad)
+alter table operacion
+add constraint Operacion_Venta foreign key (icantidad)
+References operacion(icantidad)
+alter table Tipoproducto
+add constraint Tipoproducto_Productos foreign key (vTipProdu)
+References Tipoproducto(vTipProdu)
+alter table Tipoproducto
+add constraint Tipoproducto_Provedor foreign key (vTipProdu)
+References Tipoproducto(vTipProdu)
+
+alter table clientes 
+add constraint unique_iNumCliente unique (iNumCliente)
+alter table trabajador
+add constraint unique_iNumTrabajador unique (iNumTrabajador)
+alter table provedores
+add constraint unique_iNumProv unique (iNumProv)
+alter table productos
+add constraint unique_iNumProdu unique (iNumProdu)
+alter table ticket
+add constraint unique_iNumTick unique (iNumTick)
+alter table compra
+add constraint unique_iNumComp unique (iNumComp)
+alter table venta
+add constraint unique_iFactura unique (iFactura)
+
+alter table clientes 
+add constraint Default_tipo default ( 'Normal' ) for vTipoDeClientes
+
+select * from clientes
+select * from trabajador
+select * from productos
+select * from ticket
+select * from compra 
+select * from provedores
+select * from venta
+select * from operacion
+select * from Tipoproducto
