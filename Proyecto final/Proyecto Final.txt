@@ -1,0 +1,472 @@
+create database Final
+go
+use Final
+
+create table Productos(
+idProducto int not null primary key,
+descripcion nvarchar(50) not null, 
+idProveedor int not null,
+cantProdu int not null,
+tipoProducto int ,
+precioProdu float,
+Producto as ( idProducto + '' + descripcion)
+)
+create index INDX_Productos_Producto on Productos(idProducto)
+create index INDX_Productos_TipoProducto on Productos(TipoProducto)
+
+
+create table cantidadProducto(
+idProducto int not null,
+cantProdu int not null
+)
+
+create table proveedores(
+idProveedor int not null primary key,
+nombreProve nvarchar (50) not null
+)
+create index INDX_Provedores_proveedor on proveedores(idproveedor)
+
+create table Tipoproducto(
+tipoProducto int not null primary key,
+descripcion nvarchar(20) not null, 
+)
+
+create table compra(
+idCompra int not null primary key,
+idEmpleado int not null,
+idProveedor int not null,
+fecha datetime
+) 
+create index INDX_compra_Compra on Compra(idCompra)
+
+create table detalleCompra(
+idCompra int not null,
+idProducto int not null,
+precioProdu float,
+subTotal float,
+iva float
+)
+
+create table Venta(
+idVenta int not null primary key,
+idEmpleado int not null,
+idCliente int not null,
+fecha datetime 
+)
+create index INDX_Venta_Factura on Venta(idVenta)
+
+create table detalleVenta(
+idVenta int not null,
+idProducto int not null,
+precioProdu float,
+subTotal float,
+iva float
+) 
+
+create table clientes(
+idCliente int not null primary key,
+nombre nvarchar(20),
+primerApellido nvarchar(20),
+segundoApellido nvarchar(20),
+tipoCliente int not null,
+NombreCompleto as (Nombre + '' + PrimerApellido + '' + SegundoApellido)
+)
+create index INDX_Cliente_NombreCompleto on clientes(NombreCompleto)
+create Index INDX_Clientes_TipoDeClientes on Clientes(TipoCliente)
+
+create table tipoCliente(
+tipoCliente int not null primary key,
+descripcion nvarchar(20) not null
+)
+
+create table empleados(
+idEmpleado int not null primary key,
+nombre nvarchar(20),
+primerApellido nvarchar(20),
+segundoApellido nvarchar(20),
+tipoEmpleado int not null,
+NombreCompleto as (nombre + '' + PrimerApellido + '' + SegundoApellido)
+)
+create index INDX_Trabajador_NombreCompleto on clientes(NombreCompleto)
+create Index INDX_Trabajador_TipoTrabajador on empleados(TipoEmpleado)
+
+
+create table tipoEmpleado(
+tipoEmpleado int not null primary key,
+descripcion nvarchar(20) not null
+)
+
+create table ticket(
+idTicket int not null primary key, 
+direccion nvarchar(50) not null,
+idVenta int not null,
+idFactura int not null,
+idEmpleado int not null,
+idCliente int not null
+) 
+create index INDX_ticket_ticket on Ticket(idTicket)
+
+create table factura(
+idTicket int not null,
+idFactura int not null
+)
+
+create table direccion (
+direccion nvarchar(50) not null primary key
+)
+
+alter table cantidadProducto
+add constraint fk_Productos_prductosCantidad_idProducto
+foreign key (idProducto) 
+references Productos(idProducto)
+
+alter table detalleCompra
+add constraint fk_Productos_detalleCompra_idProducto
+foreign key (idProducto) 
+references Productos(idProducto)
+
+alter table detalleVenta
+add constraint fk_Productos_detalleVenta_idProducto
+foreign key (idProducto) 
+references Productos(idProducto)
+
+alter table Compra
+add constraint fk_Proveedores_Compra_idProveedor
+foreign key (idProveedor) 
+references Proveedores(idProveedor)
+
+alter table Productos
+add constraint fk_Proveedores_productos_idProveedor
+foreign key (idProveedor) 
+references Proveedores(idProveedor)
+
+alter table Productos
+add constraint fk_Proveedores_productos_tipoProducto
+foreign key (tipoProducto) 
+references TipoProducto(tipoProducto)
+
+alter table detalleCompra
+add constraint fk_Compra_detalleCompra_idCompra
+foreign key (idCompra) 
+references Compra(idCompra)
+
+alter table detalleVenta
+add constraint fk_Venta_detalleVenta_idVenta 
+foreign key (idVenta) 
+references Venta(idVenta)
+
+alter table ticket
+add constraint fk_Venta_ticket_idVenta 
+foreign key (idVenta) 
+references Venta(idVenta)
+
+alter table ticket
+add constraint fk_Clientes_ticket_idCliente
+foreign key (idCliente) 
+references Clientes(idCliente)
+
+alter table Venta
+add constraint fk_Clientes_venta_idCliente
+foreign key (idCliente) 
+references Clientes(idCliente)
+
+alter table Compra
+add constraint fk_Empleados_Compra_idEmpleado
+foreign key (idEmpleado) 
+references Empleados(idEmpleado)
+
+alter table Venta
+add constraint fk_Empleados_Venta_idEmpleado
+foreign key (idEmpleado) 
+references Empleados(idEmpleado)
+
+alter table Ticket
+add constraint fk_Empleados_ticket_idEmpleado
+foreign key (idEmpleado) 
+references Empleados(idEmpleado)
+
+alter table Clientes
+add constraint fk_tipoCliente_Clientes_tipoCliente
+foreign key (tipoCliente) 
+references tipoCliente(tipoCliente)
+
+alter table Empleados
+add constraint fk_Empleados_Clientes_tipoEmpleado
+foreign key (tipoEmpleado) 
+references tipoEmpleado(tipoEmpleado)
+
+alter table Factura
+add constraint fk_Ticket_factura_idTicket
+foreign key (idTicket) 
+references Ticket(idTicket)
+
+alter table Ticket
+add constraint fk_direccion_ticket_direccion
+foreign key (direccion) 
+references direccion(direccion)
+
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (9, 14030)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (10, 14026)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (15, 14029)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (19, 14023)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (20, 14024)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (21, 14025)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (25, 14037)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (29, 14032)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (30, 14033)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (31, 14034)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (32, 14036)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (35, 14035)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (40, 14027)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (41, 14028)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (49, 14015)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (50, 14016)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (51, 14014)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (56, 14031)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (70, 14012)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (79, 14018)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (80, 14011)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (81, 14013)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (82, 14017)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (83, 14019)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (84, 14020)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (85, 14021)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (100, 14003)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (110, 14002)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (111, 14006)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (114, 14007)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (120, 14001)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (130, 14004)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (150, 14008)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (170, 14009)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (200, 14010)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (550, 14005)
+INSERT [dbo].[cantidadProducto] ([cantProdu], [idProducto]) VALUES (878, 14022)
+INSERT [dbo].[clientes] ([idCliente], [nombre], [primerApellido], [segundoApellido], [tipoCliente]) VALUES (7002, N'Juan Isidro', N'Guzman', N'Flores', 1)
+INSERT [dbo].[clientes] ([idCliente], [nombre], [primerApellido], [segundoApellido], [tipoCliente]) VALUES (7003, N'Sofia', N'Hernan', N'Ramos', 2)
+INSERT [dbo].[clientes] ([idCliente], [nombre], [primerApellido], [segundoApellido], [tipoCliente]) VALUES (7004, N'Fernando', N'Salazar', N'Campos', 1)
+INSERT [dbo].[clientes] ([idCliente], [nombre], [primerApellido], [segundoApellido], [tipoCliente]) VALUES (7005, N'Jose Ernesto', N'Rivas', N'Santos', 2)
+INSERT [dbo].[clientes] ([idCliente], [nombre], [primerApellido], [segundoApellido], [tipoCliente]) VALUES (7006, N'Israel', N'Palomino', N'Teran', 1)
+INSERT [dbo].[clientes] ([idCliente], [nombre], [primerApellido], [segundoApellido], [tipoCliente]) VALUES (7007, N'Emmanuel', N'Garcia', N'Elizondo', 1)
+INSERT [dbo].[detalleVenta] ([idVenta], [idProducto], [precioProdu], [subTotal], [iva]) VALUES (250001, 14002, 12, 12, 0)
+INSERT [dbo].[direccion] ([direccion]) VALUES (N'Av. Jalisco # 23415, col Roma Gpe Nuevo Leon')
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1000, N'Jonathan Adrian', N'Gutierrez', N'Alvarado', 5)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1001, N'Nelly Alexandra', N'Viera', N'Cardona', 4)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1002, N'Fransisco Rafael', N'Castillo', N'Martinez', 2)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1003, N'Abel Antonio', N'Castro', N'Valdez', 3)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1004, N'Maria de Jesus', N'Gonzalez', N'Cruz', 1)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1005, N'Alan Alberto', N'Cuellar', N'Rios', 1)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1006, N'Imelda', N'Renteria', N'Vazquez', 2)
+INSERT [dbo].[empleados] ([idEmpleado], [nombre], [primerApellido], [segundoApellido], [tipoEmpleado]) VALUES (1007, N'Carolina', N'Hernandez', N'Portillo', 1)
+INSERT [dbo].[factura] ([idFactura], [idTicket]) VALUES (25001, 50001)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14001, N'Emperador chocolate 101g', 20001, 120, 1, 15)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14002, N'Coca cola 600ml', 20002, 110, 1, 12)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14003, N'Pepsi 2.5L', 20003, 100, 1, 27.5)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14004, N'Mantecadas 125g', 20004, 130, 1, 17)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14005, N'Takis Fuego 62g', 20005, 550, 1, 12)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14006, N'Sabritones 165g', 20006, 111, 1, 23.5)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14007, N'Filete de pescado 330g', 20007, 114, 2, 33.5)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14008, N'Leche entera 1L', 20008, 150, 3, 20)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14009, N'Salsa verde 300ml', 20009, 170, 1, 24)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14010, N'Cloralex 900ml', 20010, 200, 5, 28)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14011, N'Coca cola 50ml', 20002, 80, 1, 11.5)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14012, N'Coca cola 2L', 20002, 70, 1, 28)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14013, N'Coca cola 2.5L', 20002, 81, 1, 30)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14014, N'Emperador Vainilla 101g', 20001, 50, 1, 17)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14015, N'Chokis 57g', 20001, 50, 1, 14)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14016, N'Emperador Limon', 20001, 50, 1, 17)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14017, N'Pepsi 600ml', 20003, 82, 1, 10)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14018, N'Mirinda 600ml', 20003, 79, 1, 10)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14019, N'Seven Up 600ml', 20003, 83, 1, 10)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14020, N'Pepsi 1L', 20003, 84, 1, 24)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14021, N'Pepsi 3L', 20003, 85, 1, 29)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14022, N'Manzanita 600ml', 20003, 878, 1, 10)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14023, N'Donitas espolvoreadas 105g', 20004, 19, 1, 18)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14024, N'Nito 62g', 20004, 20, 1, 14)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14025, N'Conchas 92g', 20004, 21, 1, 21)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14026, N'Runers 58g', 20005, 10, 1, 13)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14027, N'Takis verdes 62g', 20005, 25, 1, 14)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14028, N'Chipotles 62g', 20005, 41, 1, 14)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14029, N'Leche desclctosada 1L', 20008, 15, 3, 32)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14030, N'Crema lala 80g', 20008, 9, 3, 19)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14031, N'Yopli 20g', 20008, 56, 3, 6)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14032, N'Sabritas Limon 45g', 20006, 29, 1, 13)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14033, N'Ranchertitos', 20006, 30, 1, 13)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14034, N'Chetos 52g', 20006, 31, 1, 11)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14035, N'pinol 1L', 20010, 35, 5, 23)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14036, N'Pinol 500ml', 20010, 32, 5, 14)
+INSERT [dbo].[productos] ([idProducto], [descripcion], [idProveedor], [cantProdu], [tipoProducto], [precioProdu]) VALUES (14037, N'Cloralex 250 ml', 20010, 25, 5, 9)
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20001, N'Gamesa')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20002, N'Coca cola')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20003, N'Pepsico')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20004, N'Bimbo')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20005, N'Barcel')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20006, N'Sabritas')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20007, N'Pescadin')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20008, N'Lala corporation')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20009, N'Herdez')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20010, N'Cloralex SA de CV')
+INSERT [dbo].[proveedores] ([idProveedor], [nombreProve]) VALUES (20011, N'Bocados')
+INSERT [dbo].[ticket] ([idTicket], [direccion], [idVenta], [idFactura], [idEmpleado], [idCliente]) VALUES (50001, N'Av. Jalisco # 23415, col Roma Gpe Nuevo Leon', 250001, 25001, 1004, 7007)
+INSERT [dbo].[tipoCliente] ([tipoCliente], [descripcion]) VALUES (1, N'simple')
+INSERT [dbo].[tipoCliente] ([tipoCliente], [descripcion]) VALUES (2, N'Mayoreo')
+INSERT [dbo].[tipoEmpleado] ([tipoEmpleado], [descripcion]) VALUES (1, N'Vendedor')
+INSERT [dbo].[tipoEmpleado] ([tipoEmpleado], [descripcion]) VALUES (2, N'Cajero')
+INSERT [dbo].[tipoEmpleado] ([tipoEmpleado], [descripcion]) VALUES (3, N'Otros')
+INSERT [dbo].[tipoEmpleado] ([tipoEmpleado], [descripcion]) VALUES (4, N'Lider')
+INSERT [dbo].[tipoEmpleado] ([tipoEmpleado], [descripcion]) VALUES (5, N'Gerente')
+INSERT [dbo].[tipoProducto] ([tipoProducto], [descripcion]) VALUES (1, N'Abarrotes')
+INSERT [dbo].[tipoProducto] ([tipoProducto], [descripcion]) VALUES (2, N'Perecederos')
+INSERT [dbo].[tipoProducto] ([tipoProducto], [descripcion]) VALUES (3, N'Lacteos')
+INSERT [dbo].[tipoProducto] ([tipoProducto], [descripcion]) VALUES (4, N'Hogar')
+INSERT [dbo].[tipoProducto] ([tipoProducto], [descripcion]) VALUES (5, N'uso diario')
+INSERT [dbo].[venta] ([idVenta], [idEmpleado], [idCliente], [fecha]) VALUES (250001, 1004, 7007, CAST(0x0000AAE900000000 AS DateTime))
+
+select *
+from productos
+
+select top 3 nomProveedor as 'Nombre proveedores'
+from proveedores
+
+select nombre
+from empleados, tipoEmpleado
+where idEmpleado > 1000  
+
+select Direccion as 'Localización del punto de venta '
+from direccion
+
+-- selelects group by
+select descripcion, count(d.tipoEmpleado) as total
+from [tipoEmpleado] as d
+group by descripcion
+
+select idproducto, sum(p.cantProdu) as total
+from [productos] as p
+group by descripcion
+
+select direccion, count(a.Direccion) as total
+from [ticket] as a
+group by Direccion
+
+
+SELECT p.idCliente as nombre, COUNT(p.idCliente) as 'Registrados al momento'
+FROM [clientes] as p
+group by p.idCliente
+having COUNT(p.tipoCliente) =5
+
+select top 4 NombreCompleto as 'Nombre del cliente'
+from clientes
+
+create view InfoCompleta
+ AS SELECT idProducto, descripcion, cantProdu
+ FROM productos
+ go
+ select * from InfoCompleta
+create view infoClientes
+AS SELECT NombreCompleto, idCliente
+FROM clientes
+select * from infoClientes
+go
+create view detalleProveedor as 
+select idProveedor
+from proveedores
+union all
+select idProducto
+from productos
+union all
+select nombreProve
+from proveedores
+select * from detalleProveedor
+go
+create view detalleVentas as 
+select idVenta
+from venta
+union all
+select idTicket
+from ticket
+union all
+select idCliente
+from clientes
+union all
+select idProducto
+from productos;
+select * from detalleVentas
+go
+
+create view entradas as
+select nombreProve
+from proveedores union all
+select idProveedor
+from proveedores union all
+select cantProdu
+from cantidadProducto 
+select * from entradas
+
+create trigger TR_productos 
+on productos 
+for delete 
+as 
+begin
+	declare @p int 
+	select @p = idproducto from productos
+	if (@p is null)
+		print 'No existe dato'
+	else 
+		DELETE FROM productos WHERE idProducto = @p;
+end
+
+go
+create function FN_Prov (@nom int)
+Returns table 
+as 
+	return (select idProveedor, nombreProve from proveedores
+	where idProveedor = @nom)
+
+create procedure SP_Productos 
+@pro int
+as 
+begin 
+	select * from productos where idProducto = @pro
+	print 'Busqueda correctra'
+end
+exec SP_Productos '14004'
+go 
+
+create procedure SP_Proveedores
+@prov int
+as 
+begin 
+	select * from proveedores where idProveedor = @prov
+	print 'Busqueda correctra'
+end
+exec SP_Proveedores '20003'
+go
+
+create procedure SP_Clientes
+@clie int
+as 
+begin 
+	select * from clientes where idCliente = @clie
+	print 'Busqueda correctra'
+end
+exec SP_Clientes'7000'
+go
+
+create procedure SP_Empleados
+@empl int
+as 
+begin 
+	select * from empleados where idEmpleado = @empl
+	print 'Busqueda correctra'
+end
+exec SP_Empleados '1010'
+go
+
+create procedure SP_Compra
+@com int
+as 
+begin 
+	select * from compra where idCompra = @com
+	print 'Busqueda correctra'
+end
+go
